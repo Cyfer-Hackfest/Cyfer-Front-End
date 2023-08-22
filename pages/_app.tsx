@@ -6,6 +6,7 @@ import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 import { publicProvider } from "wagmi/providers/public";
 import { ChakraProvider } from "@chakra-ui/react";
 import Layout from "../components/Layout";
+import Web3Provider from "../context/provider";
 
 const { chains, provider } = configureChains(
   [chain.mainnet], // you can add more chains here like chain.mainnet, chain.optimism etc.
@@ -13,7 +14,7 @@ const { chains, provider } = configureChains(
     jsonRpcProvider({
       rpc: () => {
         return {
-          http: "https://rpc.ankr.com/polygon", // go to https://www.ankr.com/protocol/ to get a free RPC for your network if you're not using Polygon
+          http: "https://rpc.ankr.com/polygon",
         };
       },
     }),
@@ -37,9 +38,11 @@ function MyApp({ Component, pageProps }) {
     <ChakraProvider>
       <WagmiConfig client={wagmiClient}>
         <RainbowKitProvider chains={chains}>
-          <Layout>
-            <Component {...pageProps} />
-          </Layout>
+          <Web3Provider>
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </Web3Provider>
         </RainbowKitProvider>
       </WagmiConfig>
     </ChakraProvider>
