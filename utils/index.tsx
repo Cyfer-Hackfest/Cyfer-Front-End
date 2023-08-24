@@ -1,4 +1,4 @@
-import { Contract } from "./near-contract";
+import { NFTContract, MarketContract } from "./near-contract";
 import { Wallet } from "./near-wallet";
 
-export { Contract, Wallet };
+export { NFTContract, MarketContract, Wallet };

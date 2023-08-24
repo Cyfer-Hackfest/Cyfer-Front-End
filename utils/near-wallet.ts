@@ -6,6 +6,7 @@ import {
   NetworkId,
   Network,
   WalletSelector,
+  Wallet as WalletBrowser,
 } from "@near-wallet-selector/core";
 import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
 import { CodeResult } from "near-api-js/lib/providers/provider";
@@ -21,7 +22,7 @@ interface WalletOptions {
 
 export class Wallet {
   walletSelector: WalletSelector;
-  wallet: any;
+  wallet: WalletBrowser;
   network: NetworkId | Network;
   createAccessKeyFor: string | undefined;
   accountId: string | null;
@@ -90,6 +91,13 @@ export class Wallet {
     gas = THIRTY_TGAS,
     deposit = NO_DEPOSIT,
   }: any): Promise<any> {
+    console.log({
+      methodName: method,
+      args,
+      gas,
+      deposit,
+    });
+
     return await this.wallet.signAndSendTransaction({
       signerId: this.accountId!,
       receiverId: contractId,

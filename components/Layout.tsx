@@ -3,7 +3,7 @@ import ConnectWalletButton from "./ConnectWalletButton";
 import { useWeb3 } from "../context/provider";
 
 const Layout = ({ children }) => {
-  const { wallet, isSignedIn } = useWeb3();
+  const { wallet, isSignedIn } = useWeb3().web3;
 
   return (
     <Container maxW="90vw" paddingY="10">

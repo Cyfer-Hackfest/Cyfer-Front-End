@@ -1,18 +1,19 @@
 import React from "react";
 import styled from "@emotion/styled";
+import { TokenMetadata } from "../types";
 
 interface NFT {
-  id: number;
-  name: string;
-  image: string;
-  owner: string;
-  price: number;
+  owner_id: string;
+  token_id: string;
+  metadata: TokenMetadata;
+  royalty: any;
+  approved_account_ids: any;
 }
 
 interface NFTCardProps {
   nft: NFT;
   isOwner: boolean;
-  onBuyClick: (nftId: number) => void;
+  onBuyClick: (nftId: string) => void;
 }
 
 const CardContainer = styled.div`
@@ -21,7 +22,7 @@ const CardContainer = styled.div`
   border-radius: 8px;
   padding: 16px;
   margin: 16px;
-  width: 300px;
+  width: 30%;
 `;
 
 const Image = styled.img`
@@ -31,12 +32,13 @@ const Image = styled.img`
   border-radius: 8px;
 `;
 
-const Title = styled.h3`
+const Title = styled.h2`
   margin-top: 8px;
+  font-size: 25px;
 `;
 
-const Price = styled.p`
-  font-weight: bold;
+const Description = styled.h4`
+  margin-top: 8px;
 `;
 
 const BuyButton = styled.button`
@@ -73,14 +75,20 @@ const NFTCard: React.FC<NFTCardProps> = ({ nft, isOwner, onBuyClick }) => {
     <CardContainer>
       <StatusWidget>
         {!isOwner ? (
-          <BuyButton onClick={() => onBuyClick(nft.id)}>Buy</BuyButton>
+          <BuyButton onClick={() => onBuyClick(nft.token_id)}>Buy</BuyButton>
         ) : (
           <OwnerTitle>Own by You</OwnerTitle>
         )}
       </StatusWidget>
-      <Image src={nft.image} alt={nft.name} />
-      <Title>{nft.name}</Title>
-      <Price>{nft.price} ETH</Price>
+
+      <Image
+        src={`https://amethyst-disabled-tyrannosaurus-478.mypinata.cloud/ipfs/${nft.metadata.media}`}
+        alt={nft.metadata.title}
+      />
+      <p>by @{nft.owner_id}</p>
+      <Title>{nft.metadata.title}</Title>
+      <Description>{nft.metadata.description}</Description>
+      {/* <Price>{nft.royalty} *</Price> */}
     </CardContainer>
   );
 };

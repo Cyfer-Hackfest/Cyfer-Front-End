@@ -1,43 +1,56 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { Contract, Wallet } from "../utils";
+import { MarketContract, NFTContract } from "../utils/near-contract";
+import { MARKET_CONTRACT_ID, NFT_CONTRACT_ID } from "../contants";
 
 export const Web3Context = createContext(null);
 
 // Simple contract set-get-greeting
-export const CONTRACT_ID = "dev-1692635127446-62744766911805";
 
 function Web3Provider({ children }) {
   const [web3, setWeb3] = useState({
     wallet: null,
-    contract: null,
+    nftContract: null,
+    marketContract: null,
     isSignedIn: null,
-    message: null,
+    totalSupply: null,
   });
+  const [nfts, setNfts] = useState([]);
 
   useEffect(() => {
     const loadProvider = async () => {
       const wallet = await new Wallet({
-        createAccessKeyFor: CONTRACT_ID,
+        createAccessKeyFor: NFT_CONTRACT_ID,
         network: "testnet",
       });
-      const contract = await new Contract({
-        contractId: CONTRACT_ID,
+      const nftContract = await new NFTContract({
+        contractId: NFT_CONTRACT_ID,
+        wallet: wallet,
+      });
+
+      const marketContract = await new MarketContract({
+        contractId: MARKET_CONTRACT_ID,
         wallet: wallet,
       });
       const isSignedIn = await wallet.startUp();
-      const message = await contract.getGreeting();
+      const totalSupply = await nftContract.getTotalSupply();
 
       setWeb3({
         wallet,
-        contract,
+        nftContract,
+        marketContract,
         isSignedIn,
-        message,
+        totalSupply,
       });
     };
     loadProvider();
   }, []);
 
-  return <Web3Context.Provider value={web3}>{children}</Web3Context.Provider>;
+  return (
+    <Web3Context.Provider value={{ web3, nfts, setNfts }}>
+      {children}
+    </Web3Context.Provider>
+  );
 }
 
 export function useWeb3() {
