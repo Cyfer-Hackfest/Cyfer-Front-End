@@ -73,4 +73,20 @@ export class MarketContract {
       deposit: price,
     });
   }
+
+  async updatePrice() {
+    return await this.wallet.callMethod({
+      contractId: this.contractId,
+      method: "",
+      args: {},
+    });
+  }
+
+  async removeSale() {
+    return await this.wallet.callMethod({
+      contractId: this.contractId,
+      method: "",
+      args: {},
+    });
+  }
 }

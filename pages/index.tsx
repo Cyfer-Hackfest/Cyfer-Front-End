@@ -5,6 +5,7 @@ import mockNFTs from "../data/nfts";
 import { useEffect, useState } from "react";
 import CreateNFTModal from "../components/CreateNftModal";
 import { NFT_EACH_PAGE } from "../contants";
+import { useRouter } from "next/router";
 
 const NFTGrid = styled.div`
   display: flex;

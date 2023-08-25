@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "@emotion/styled";
 import { TokenMetadata } from "../types";
+import { useRouter } from "next/router";
 
 interface NFT {
   owner_id: string;
@@ -71,8 +72,12 @@ const OwnerTitle = styled.p`
 `;
 
 const NFTCard: React.FC<NFTCardProps> = ({ nft, isOwner, onBuyClick }) => {
+  const router = useRouter();
+
+  console.log(nft.metadata.media);
+
   return (
-    <CardContainer>
+    <CardContainer onClick={() => router.push(`/show/${nft.token_id}`)}>
       <StatusWidget>
         {!isOwner ? (
           <BuyButton onClick={() => onBuyClick(nft.token_id)}>Buy</BuyButton>
