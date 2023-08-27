@@ -4,7 +4,6 @@ import { useWeb3 } from "../context/provider";
 import { useRouter } from "next/router";
 
 const Layout = ({ children }) => {
-  const { wallet, isSignedIn } = useWeb3().web3;
   const router = useRouter();
 
   return (
@@ -13,7 +12,7 @@ const Layout = ({ children }) => {
         <Heading as="h2" onClick={() => router.push("/")}>
           Gallery
         </Heading>
-        <ConnectWalletButton isSignedIn={isSignedIn} wallet={wallet} />
+        <ConnectWalletButton />
       </Flex>
       <Box my={9}>{children}</Box>
     </Container>

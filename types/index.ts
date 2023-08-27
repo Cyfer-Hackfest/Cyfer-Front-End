@@ -18,6 +18,14 @@ export interface TokenMetadata {
   reference_hash?: Base64VecU8 | null;
 }
 
+export interface NFT {
+  owner_id: string;
+  token_id: string;
+  metadata: TokenMetadata;
+  royalty: any;
+  approved_account_ids: any;
+}
+
 // Example usage:
 const metadata: TokenMetadata = {
   title: "Arch Nemesis: Mail Carrier",

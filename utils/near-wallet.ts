@@ -91,13 +91,6 @@ export class Wallet {
     gas = THIRTY_TGAS,
     deposit = NO_DEPOSIT,
   }: any): Promise<any> {
-    console.log({
-      methodName: method,
-      args,
-      gas,
-      deposit,
-    });
-
     return await this.wallet.signAndSendTransaction({
       signerId: this.accountId!,
       receiverId: contractId,

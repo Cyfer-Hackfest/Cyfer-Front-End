@@ -14,6 +14,7 @@ function Web3Provider({ children }) {
     marketContract: null,
     isSignedIn: null,
     totalSupply: null,
+    balance: null,
   });
   const [nfts, setNfts] = useState([]);
 
@@ -34,6 +35,9 @@ function Web3Provider({ children }) {
       });
       const isSignedIn = await wallet.startUp();
       const totalSupply = await nftContract.getTotalSupply();
+      const balance = wallet.accountId
+        ? await marketContract.getBalanceOfUser(wallet.accountId)
+        : null;
 
       setWeb3({
         wallet,
@@ -41,6 +45,7 @@ function Web3Provider({ children }) {
         marketContract,
         isSignedIn,
         totalSupply,
+        balance,
       });
     };
     loadProvider();

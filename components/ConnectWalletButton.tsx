@@ -1,40 +1,56 @@
 import React from "react";
-import { Wallet } from "../utils"; // Replace with the actual import path
 import styled from "@emotion/styled";
+import { useWeb3 } from "../context/provider";
 
 interface ConnectButtonProps {
-  isSignedIn: boolean;
+  isSignedIn: boolean | null;
+  bg: string | null;
 }
 
-interface ConnectWalletButtonProps {
-  isSignedIn: boolean;
-  wallet: Wallet;
-}
+const ConnectWalletButton = () => {
+  const { web3 } = useWeb3();
 
-const ConnectWalletButton: React.FC<ConnectWalletButtonProps> = ({
-  isSignedIn,
-  wallet,
-}) => {
   const handleSignIn = async () => {
-    if (!isSignedIn) {
-      await wallet.signIn();
+    if (!web3.isSignedIn) {
+      await web3.wallet.signIn();
     }
   };
 
   const handleSignOut = async () => {
-    if (isSignedIn) {
-      await wallet.signOut();
+    if (web3.isSignedIn) {
+      await web3.wallet.signOut();
     }
+  };
+
+  const handleDeposit = async () => {
+    await web3.marketContract.storageDeposit();
   };
 
   return (
     <Container>
-      {isSignedIn && <Text>{wallet.accountId}</Text>}
+      {web3.isSignedIn && (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+          }}>
+          <div>
+            <Text>{web3.wallet.accountId}</Text>
+            <Text>Balance: {web3.balance}</Text>
+          </div>
+          {web3.balance == "0" && (
+            <Button bg={"blue"} isSignedIn={null} onClick={handleDeposit}>
+              Deposit 1 NEAR
+            </Button>
+          )}
+        </div>
+      )}
 
       <Button
-        isSignedIn={isSignedIn}
-        onClick={isSignedIn ? handleSignOut : handleSignIn}>
-        {isSignedIn ? "Disconnect" : "Connect Wallet"}
+        bg={null}
+        isSignedIn={web3.isSignedIn}
+        onClick={web3.isSignedIn ? handleSignOut : handleSignIn}>
+        {web3.isSignedIn ? "Disconnect" : "Connect web3.wallet"}
       </Button>
     </Container>
   );
@@ -53,6 +69,7 @@ const Text = styled.p`
 const Button = styled.button<ConnectButtonProps>`
   padding: 10px 20px;
   background-color: ${(props) => (props.isSignedIn ? "#E63946" : "#2ECC40")};
+  background-color: ${(props) => (props.bg ? props.bg : "")};
   color: #ffffff;
   border: none;
   border-radius: 30px;

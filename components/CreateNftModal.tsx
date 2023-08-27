@@ -91,7 +91,6 @@ const CreateNFTModal: React.FC<CreateNFTModalProps> = ({
   const handleSubmit = async () => {
     const rs = await nftContract.mintNft(tokenId, receiverId, metadata);
 
-    console.log(rs);
     onClose();
   };
 
@@ -184,7 +183,7 @@ const CreateNFTModal: React.FC<CreateNFTModalProps> = ({
         )}
         {metadata.media && (
           <img
-            src={`https://amethyst-disabled-tyrannosaurus-478.mypinata.cloud/ipfs/${metadata.media}`}
+            src={`https://gateway.pinata.cloud/ipfs/${metadata.media}`}
             width={50}
             height={50}
             style={{

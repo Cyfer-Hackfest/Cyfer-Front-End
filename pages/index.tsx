@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 import CreateNFTModal from "../components/CreateNftModal";
 import { NFT_EACH_PAGE } from "../contants";
 import { useRouter } from "next/router";
+import { NFT } from "../types";
+import ShowNftModal from "../components/ShowNftModal";
 
 const NFTGrid = styled.div`
   display: flex;
@@ -47,6 +49,8 @@ const Home: React.FC = () => {
   const [showCreateNftModal, setShowCreateNftModal] = useState<boolean>(false);
   const [numberOfPagination, setNumberOfPagination] = useState<number>(1);
   const [currentPageNum, setCurrentPageNum] = useState<number>(0);
+  const [nftToShow, setNftToShow] = useState<NFT | null>(null);
+  const [saleToShow, setSaleToShow] = useState<any>(null);
 
   useEffect(() => {
     setNumberOfPagination(Math.ceil(totalSupply / NFT_EACH_PAGE));
@@ -84,6 +88,10 @@ const Home: React.FC = () => {
         {nfts &&
           nfts.map((nft) => (
             <NFTCard
+              setNftToShow={(nft, sale) => {
+                setNftToShow(nft);
+                setSaleToShow(sale);
+              }}
               key={nft.token_id}
               nft={nft}
               isOwner={nft.owner_id === wallet.accountId} // Replace with your logic
@@ -118,6 +126,13 @@ const Home: React.FC = () => {
         nftContract={nftContract}
         wallet={wallet}
       />
+      {nftToShow && (
+        <ShowNftModal
+          nft={nftToShow}
+          onClose={() => setNftToShow(null)}
+          sale={saleToShow}
+        />
+      )}
     </div>
   );
 };

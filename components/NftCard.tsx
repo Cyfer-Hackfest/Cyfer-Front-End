@@ -1,20 +1,15 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
-import { TokenMetadata } from "../types";
+import { NFT, TokenMetadata } from "../types";
 import { useRouter } from "next/router";
-
-interface NFT {
-  owner_id: string;
-  token_id: string;
-  metadata: TokenMetadata;
-  royalty: any;
-  approved_account_ids: any;
-}
+import { useWeb3 } from "../context/provider";
+import { NFT_CONTRACT_ID } from "../contants";
 
 interface NFTCardProps {
   nft: NFT;
   isOwner: boolean;
   onBuyClick: (nftId: string) => void;
+  setNftToShow: (nft: NFT, sale: any) => void;
 }
 
 const CardContainer = styled.div`
@@ -42,21 +37,8 @@ const Description = styled.h4`
   margin-top: 8px;
 `;
 
-const BuyButton = styled.button`
-  background-color: green;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 8px 12px;
-  cursor: pointer;
-
-  :hover {
-    background-color: blue;
-  }
-`;
-
 const StatusWidget = styled.div`
-  background-color: blue;
+  background-color: green;
   color: white;
   border: none;
   border-radius: 4px;
@@ -66,28 +48,57 @@ const StatusWidget = styled.div`
   top: 0;
 `;
 
+const IsOwner = styled.div`
+  background-color: blue;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  position: absolute;
+  left: 0;
+  top: 0;
+`;
+
 const OwnerTitle = styled.p`
   padding: 8px 12px;
   font-weight: bold;
 `;
 
-const NFTCard: React.FC<NFTCardProps> = ({ nft, isOwner, onBuyClick }) => {
-  const router = useRouter();
+const NFTCard: React.FC<NFTCardProps> = ({
+  nft,
+  isOwner,
+  onBuyClick,
+  setNftToShow,
+}) => {
+  const { marketContract } = useWeb3().web3;
+  const [isSaling, setIsSaling] = useState<boolean>(false);
+  const [sale, setSale] = useState<any>(null);
 
-  console.log(nft.metadata.media);
+  useEffect(() => {
+    const checkIsSale = async () => {
+      const rs = await marketContract.getSale(
+        `${NFT_CONTRACT_ID}.${nft.token_id}`
+      );
+      setSale(rs);
+
+      if (rs != null) {
+        setIsSaling(true);
+      }
+    };
+
+    checkIsSale();
+  }, []);
 
   return (
-    <CardContainer onClick={() => router.push(`/show/${nft.token_id}`)}>
+    <CardContainer onClick={() => setNftToShow(nft, sale)}>
+      <IsOwner>{isOwner && <OwnerTitle>Own by You</OwnerTitle>}</IsOwner>
+
       <StatusWidget>
-        {!isOwner ? (
-          <BuyButton onClick={() => onBuyClick(nft.token_id)}>Buy</BuyButton>
-        ) : (
-          <OwnerTitle>Own by You</OwnerTitle>
-        )}
+        {isSaling && <OwnerTitle>On Sale</OwnerTitle>}
       </StatusWidget>
 
       <Image
-        src={`https://amethyst-disabled-tyrannosaurus-478.mypinata.cloud/ipfs/${nft.metadata.media}`}
+        src={`https://gateway.pinata.cloud/ipfs/${nft.metadata.media}`}
         alt={nft.metadata.title}
       />
       <p>by @{nft.owner_id}</p>

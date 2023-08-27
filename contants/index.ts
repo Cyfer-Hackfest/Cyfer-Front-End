@@ -1,4 +1,4 @@
-export const NFT_CONTRACT_ID: string = "cyfer.duyan.testnet";
+export const NFT_CONTRACT_ID: string = "contract.duyan.testnet";
 export const MARKET_CONTRACT_ID: string = "market.duyan.testnet";
 
 export const NFT_EACH_PAGE: number = 6;
